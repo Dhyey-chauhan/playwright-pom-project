@@ -1,7 +1,7 @@
 import { test, expect }  from "@playwright/test";
-import LoginPage         from "../pages/LoginPage";
-import DashboardPage     from "../pages/DashboardPage"
-import { validUser, invalidUser } from "../utils/testData";
+import LoginPage         from "../../pages/LoginPage";
+import DashboardPage     from "../../pages/DashboardPage"
+import { validUser, invalidUser } from "../../utils/testData";
 
 test.describe("Login Test Suite", () => {
 
