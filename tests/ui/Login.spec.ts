@@ -19,7 +19,7 @@ test.describe("Login Test Suite", () => {
     });
 
     // TEST 1 — Valid Login
-    test("should login with valid credentials and verify dashboard", async () => {
+    test.only("should login with valid credentials and verify dashboard", async () => {
 
         // login
         await loginPage.login(validUser.username, validUser.password);
@@ -32,7 +32,7 @@ test.describe("Login Test Suite", () => {
 
     // TEST 2 — Invalid Login
     // REMOVED test.only
-    test("should show error for invalid credentials", async () => {
+    test.only("should show error for invalid credentials", async () => {
 
         await loginPage.login(
             invalidUser.username,
