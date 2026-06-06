@@ -1,27 +1,47 @@
-import { Page, Locator, expect } from "@playwright/test";
-import { BasePage } from "./BasePage";           
+import { Page, expect } from '@playwright/test';
+import BasePage from './BasePage';
 
-export class DashboardPage extends BasePage {     
-
-    private pageHeading:    Locator;
-    private successMessage: Locator;
+class DashboardPage extends BasePage {
 
     constructor(page: Page) {
-        super(page);                              
-
-        this.pageHeading    = page.getByTestId("post-hero-title");
-        this.successMessage = page.getByRole("status");
+        super(page);
+        this.page = page;
     }
 
-    //  getText() from BasePage instead of expect directly
-    async verifyDashboard() {
-        const message = await this.getText(this.successMessage);
-        expect(message).toContain("Logged in successfully");
+    //  locators object like reference pattern
+    locators = {
+        pageHeading:    'post-hero-title',
+        successMessage: '[role="status"]',
+    };
+
+    //  getter methods like reference pattern
+    getPageHeading() {
+        return this.page.getByTestId(this.locators.pageHeading);
     }
 
-    //use the text parameter that was passed in
-    async verifyHeading(text: string) {
-        const heading = await this.getText(this.pageHeading);
-        expect(heading).toContain(text);
+    getSuccessMessage() {
+        return this.page.locator(this.locators.successMessage);
+    }
+
+    //  using expect directly like reference pattern
+    async verifyDashboard(): Promise<void> {
+        await expect(this.getSuccessMessage()).toBeVisible();
+        await expect(this.getSuccessMessage())
+            .toContainText("Logged in successfully");
+    }
+
+    //  using expect directly like reference pattern
+    async verifyHeading(text: string): Promise<void> {
+        await expect(this.getPageHeading()).toBeVisible();
+        await expect(this.getPageHeading()).toContainText(text);
+    }
+
+    //  verify page title using BasePage method
+    async verifyPageTitle(title: string): Promise<void> {
+        const pageTitle = await this.getPageTitle();
+        expect(pageTitle).toContain(title);
     }
 }
+
+//  export default like reference
+export default DashboardPage;
