@@ -1,0 +1,61 @@
+# .github/workflows/playwright.yml
+
+name: Playwright Tests
+
+# ✅ WHEN to run — triggers
+on:
+  # Run when you push code
+  push:
+    branches:
+      - main
+      - master
+
+  # Run when you create pull request
+  pull_request:
+    branches:
+      - main
+      - master
+
+  # Run manually from GitHub website
+  workflow_dispatch:
+
+# ✅ WHAT to run — jobs
+jobs:
+  playwright-tests:
+    name: Run Playwright Tests
+    
+    # ✅ Which computer to run on
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # ✅ Step 1 — Download your code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ✅ Step 2 — Install Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # ✅ Step 3 — Install dependencies
+      - name: Install dependencies
+        run: npm ci
+
+      # ✅ Step 4 — Install Playwright browsers
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      # ✅ Step 5 — Run your tests
+      - name: Run Playwright tests
+        run: npx playwright test
+
+      # ✅ Step 6 — Upload HTML report (even if tests fail)
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always()   # runs even if tests fail
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
