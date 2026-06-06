@@ -19,7 +19,7 @@ test.afterEach(({ request }) => {
 
 
 //  GET REQUESTS
-test('GET - fetch users list', async () => {
+test.only('GET - fetch users list', async () => {
   const response = await userClient.getUsers();
   console.log(response);
   const body = await response.json();
