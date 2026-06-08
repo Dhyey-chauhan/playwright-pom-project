@@ -33,6 +33,8 @@ test.beforeAll(async ({ request }) => {
 
   const loginBody = await loginResponse.json();
 
+  console.log(JSON.stringify(loginBody, null, 2));
+
   authToken = loginBody.user.token;
   userId = loginBody.user._id;
 
@@ -70,28 +72,28 @@ test('GET - fetch logged-in user details', async ({ request }) => {
 
 
 // UPDATE USER
-// test('PUT - update user details', async ({ request }) => {
+test('PUT - update user details', async ({ request }) => {
 
-//   const userClient = new UserClient(request);
+  const userClient = new UserClient(request);
 
-//   const response = await userClient.updateUser(
-//     authToken,
-//     {
-//       firstname: `Dhyey${Date.now()}`,
-//       lastname: 'Updated',
-//       phonenumber: `${Math.floor(Math.random() * 10000000000)}`
-//     }
-//   );
+  const response = await userClient.updateUser(
+    authToken,
+    {
+      firstName: `Dhyey${Date.now()}`,
+      lastName: 'Updated',
+      phoneNumber: `${Math.floor(Math.random() * 10000000000)}`
+    }
+  );
 
-//   console.log('PUT STATUS =>', response.status());
+  console.log('PUT STATUS =>', response.status());
 
-//   const body = await response.json();
+  const body = await response.json();
 
-//   console.log(JSON.stringify(body, null, 2));
+  console.log(JSON.stringify(body, null, 2));
 
-//   expect(response.status()).toBe(200);
+  expect(response.status()).toBe(200);
 
-// });
+});
 
 
 // DELETE USER

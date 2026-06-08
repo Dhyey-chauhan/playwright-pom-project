@@ -27,9 +27,7 @@ export interface CreateUserResponse {
 }
 
 export interface UpdateUserPayload {
-  firstname?: string;
-  lastname?: string;
-  email?: string;
-  password?: string;
-  phonenumber?: string;
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: string;
 }

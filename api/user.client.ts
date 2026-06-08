@@ -29,8 +29,6 @@ export class UserClient extends BaseClient {
     payload: UpdateUserPayload
   ) {
 
-    console.log("TOKEN =>", token);
-
     return this.put(
       '/api/updateUser',
       payload,
