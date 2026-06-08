@@ -1,5 +1,6 @@
 import { expect, Page } from '@playwright/test';
 import BasePage from './BasePage';
+import { validUser } from '../utils/testData';
 
 class LoginPage extends BasePage {
 
@@ -14,7 +15,16 @@ class LoginPage extends BasePage {
         passwordInput: 'login-password-input',
         loginButton:   'login-submit-button',
         errorMessage:  '[role="status"]',
+        profileIcon: 'header-user-icon',
+        myProfile: 'my-profile-title',
+        myProfileEmailInput: 'my-profile-email-input',
+        logoutButton:  'Log Out',
+        logoutMessage: 'Logged out successfully'
     };
+
+    async goto(): Promise<void> {
+        await this.navigateTo(`${process.env.BASE_URL}` );
+    }
 
     // getter methods like reference
     getUsernameInput() {
@@ -33,9 +43,24 @@ class LoginPage extends BasePage {
         return this.page.locator(this.locators.errorMessage);
     }
 
-    //   goto method
-    async goto(): Promise<void> {
-        await this.navigateTo('/login');
+    getProfileIcon() {
+        return this.page.getByTestId(this.locators.profileIcon);
+    }
+
+    getLogoutButton() {
+        return this.page.getByText(this.locators.logoutButton);
+    }
+
+    getLogoutMessage() {
+        return this.page.getByText(this.locators.logoutMessage);
+    }
+
+    getMyProfileTitle() {
+        return this.page.getByTestId(this.locators.myProfile);
+    }
+
+    getMyProfileEmailInput() {
+        return this.page.getByTestId(this.locators.myProfileEmailInput);
     }
 
     //  fillUsername like reference
@@ -47,20 +72,52 @@ class LoginPage extends BasePage {
     // fillPassword like reference
     async fillPassword(value: string): Promise<void> {
         await expect(this.getPasswordInput()).toBeVisible();
-        await this.getPasswordInput().pressSequentially(value, { delay: 100 });
+        await this.getPasswordInput().pressSequentially(value, { delay: 100 })
     }
 
     //  clickLogin like reference
     async clickLogin(): Promise<void> {
         await expect(this.getLoginButton()).toBeVisible();
         await this.getLoginButton().click();
+
+         await this.page.waitForLoadState('networkidle');
+         console.log('After login URL:', this.page.url());
     }
+
+    async clickProfileIcon(): Promise<void> {
+    //  Wait for profile icon
+    await expect(this.getProfileIcon()).toBeVisible({ timeout: 100000 });
+    await this.getProfileIcon().click();
+}
+
+    async clickLogoutButton(): Promise<void> {
+        await this.page.getByText('Log Out').waitFor({ state: 'visible' });
+        await this.page.getByText('Log Out').click();
+    }
+
+    async verifyMyProfile(): Promise<void> {
+    //  Verify title
+    await expect(this.getMyProfileTitle())
+        .toBeVisible({ timeout: 10000 });
+    await expect(this.getMyProfileTitle())
+        .toHaveText("My Profile");
+
+    // toHaveValue not toHaveText for input
+    await expect(this.getMyProfileEmailInput())
+        .toBeVisible({ timeout: 100000 });
+    await expect(this.getMyProfileEmailInput())
+        .toHaveValue(validUser.username);
+}
 
     //  combined login method
     async login(username: string, password: string): Promise<void> {
-        await this.fillUsername(username);
-        await this.fillPassword(password);
-        await this.clickLogin();
+
+    await expect(this.getProfileIcon()).toBeVisible({ timeout: 10000 });
+    await this.getProfileIcon().click();
+
+    await this.fillUsername(username);
+    await this.fillPassword(password);
+    await this.clickLogin();
     }
 
     //  from reference
@@ -71,6 +128,11 @@ class LoginPage extends BasePage {
     // from reference
     async expectErrorMessageText(text: string): Promise<void> {
         await expect(this.getErrorMessage()).toHaveText(text);
+    }
+
+    //  from reference
+    async expectLogoutMessageVisible(): Promise<void> {
+        await expect(this.getLogoutMessage()).toBeVisible();
     }
 }
 

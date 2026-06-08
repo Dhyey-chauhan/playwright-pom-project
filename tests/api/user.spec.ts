@@ -13,7 +13,7 @@ test.beforeEach(({ request }) => {
 });
 
 // Cleanup after all tests
-test.afterEach(({ request }) => {
+test.afterEach(() => {
   console.log("execution completed");
 });
 
@@ -21,7 +21,6 @@ test.afterEach(({ request }) => {
 //  GET REQUESTS
 test.only('GET - fetch users list', async () => {
   const response = await userClient.getUsers();
-  console.log(response);
   const body = await response.json();
 
   expect(response.status()).toBe(200);
@@ -31,7 +30,7 @@ test.only('GET - fetch users list', async () => {
 
 
 //  POST REQUESTS
-test('POST - create user and store ID', async () => {
+test.only('POST - create user and store ID', async () => {
   const response = await userClient.createUser({
     title: 'Rahul Sharma',
     price: 100,

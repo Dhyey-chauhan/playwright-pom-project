@@ -1,5 +1,4 @@
 # .github/workflows/playwright.yml
-
 name: Playwright Tests
 
 # WHEN to run — triggers

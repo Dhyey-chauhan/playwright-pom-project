@@ -1,7 +1,7 @@
 // utils/testData.ts
 export const validUser = {
-    username: "dhyeychauhan165@gmail.com",
-    password: "dhyey@017"
+    username: "dhyey123@gmail.com",
+    password: "dhyey@123"
 };
 
 export const invalidUser = {
