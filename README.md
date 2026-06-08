@@ -111,7 +111,13 @@ npx playwright test
 ## Run API Tests
 
 ```bash
-npx playwright test tests/api
+npx playwright test tests/api/Login.spec.ts
+```
+
+## Run UI Tests
+
+```bash
+npx playwright test tests/ui/user.spec.ts
 ```
 
 ## Open HTML Report
