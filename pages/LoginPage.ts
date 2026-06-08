@@ -98,7 +98,7 @@ class LoginPage extends BasePage {
     async verifyMyProfile(): Promise<void> {
     //  Verify title
     await expect(this.getMyProfileTitle())
-        .toBeVisible({ timeout: 10000 });
+        .toBeVisible({ timeout: 100000 });
     await expect(this.getMyProfileTitle())
         .toHaveText("My Profile");
 

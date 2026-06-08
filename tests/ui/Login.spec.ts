@@ -78,7 +78,7 @@ test.describe("Login Test Suite", () => {
 });
 
     // TEST 4 — Verify My Profile
-    test.only("should navigate to My Profile and verify", async () => { 
+    test("should navigate to My Profile and verify", async () => { 
 
         await test.step("Login with valid credentials", async () => {
         await loginPage.login(validUser.username, validUser.password);
