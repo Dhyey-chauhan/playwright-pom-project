@@ -1,21 +1,57 @@
 import { BaseClient } from './base.client';
-import { CreateUserPayload, UpdateUserPayload } from "../model/user.model";
+
+import {
+  CreateUserPayload,
+  UpdateUserPayload
+} from "../model/user.model";
 
 export class UserClient extends BaseClient {
 
-  async getUsers(page = 1) {
-    return this.get(`/products`);
-  }
-
+  // LOGIN
   async createUser(payload: CreateUserPayload) {
-    return this.post('/products', payload);
+    return this.post('/api/login', payload);
   }
 
-  async updateUser(id: number, payload: UpdateUserPayload) {
-    return this.put(`/products/${id}`, payload);
+  // GET USER DETAILS
+  async getUserDetails(token: string) {
+
+    return this.get('/api/me', {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    });
+
   }
 
-  async deleteUser(id: number) {
-    return this.delete(`/products/${id}`);
+  // UPDATE USER
+  async updateUser(
+    token: string,
+    payload: UpdateUserPayload
+  ) {
+
+    console.log("TOKEN =>", token);
+
+    return this.put(
+      '/api/updateUser',
+      payload,
+      {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      }
+    );
+
   }
+
+  // DELETE USER
+  async deleteUser(id: string, token: string) {
+
+    return this.delete(`/api/${id}`, {
+      headers: {
+        authorization: `Bearer ${token}`
+      }
+    });
+
+  }
+
 }

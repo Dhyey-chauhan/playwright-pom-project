@@ -1,32 +1,35 @@
 export interface User {
-  id: number;
-  name: string;
+  _id: string;
+  firstname: string;
+  lastname: string;
   email: string;
-  role : string;
+  addresses?: any[];
+  orders?: any[];
+  __v?: number;
 }
 
 export interface CreateUserPayload {
-  title: string;
-  price: number;
-  description: string;
-  category: string;
-  image: string;
+  email: string;
+  password: string;
 }
 
 export interface CreateUserResponse {
-  title: string;
-  price: number;
-  id: string;
-  description: string;
-  category: string;
-  image: string;
-  createdAt: string;
+  user: {
+    _id: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    addresses: any[];
+    orders: any[];
+    __v: number;
+    token: string;
+  };
 }
 
 export interface UpdateUserPayload {
-  title?: string;
-  price?: number;
-  description?: string;
-  category?: string;
-  image?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  phonenumber?: string;
 }

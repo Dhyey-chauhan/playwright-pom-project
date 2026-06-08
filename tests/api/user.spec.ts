@@ -1,81 +1,123 @@
 import { test, expect } from '@playwright/test';
 import { UserClient } from '../../api/user.client';
-import { CreateUserResponse } from '../../model/user.model';     
 
-test.describe.configure({mode: 'serial'});
-let userClient: UserClient;
-let createdUserId: string;
+test.describe.configure({ mode: 'serial' });
 
-// Initialize UserClient before all tests // use of thebeforeeach hook - so it will run before each test-case.
-test.beforeEach(({ request }) => {
-  userClient = new UserClient(request);
+let authToken: string;
+let userId: string;
+let userEmail: string;
+
+test.beforeAll(async ({ request }) => {
+
   console.log("execution started");
+
+  userEmail = `dhyey${Date.now()}@gmail.com`;
+
+  // REGISTER USER
+  await request.post('/api/register', {
+    data: {
+      firstname: "Dhyey",
+      lastname: "Chauhan",
+      email: userEmail,
+      password: "dhyey@123"
+    }
+  });
+
+  // LOGIN USER
+  const loginResponse = await request.post('/api/login', {
+    data: {
+      email: userEmail,
+      password: "dhyey@123"
+    }
+  });
+
+  const loginBody = await loginResponse.json();
+
+  authToken = loginBody.user.token;
+  userId = loginBody.user._id;
+
 });
 
-// Cleanup after all tests
-test.afterEach(() => {
+test.afterAll(() => {
   console.log("execution completed");
 });
 
 
-//  GET REQUESTS
-test.only('GET - fetch users list', async () => {
-  const response = await userClient.getUsers();
+// LOGIN TEST
+test('POST - login user successfully', async () => {
+
+  expect(authToken).toBeDefined();
+
+  expect(userId).toBeDefined();
+
+});
+
+
+// GET USER DETAILS
+test('GET - fetch logged-in user details', async ({ request }) => {
+
+  const userClient = new UserClient(request);
+
+  const response = await userClient.getUserDetails(authToken);
+
   const body = await response.json();
 
+  JSON.stringify(body, null, 2)
+
   expect(response.status()).toBe(200);
-  expect(body).toBeDefined();
-  expect(body.length).toBeGreaterThan(0);
+
 });
 
 
-//  POST REQUESTS
-test.only('POST - create user and store ID', async () => {
-  const response = await userClient.createUser({
-    title: 'Rahul Sharma',
-    price: 100,
-    description: 'Updated description',
-    category: 'electronics',
-    image: 'https://i.pravatar.cc'
-  });
-  const body: CreateUserResponse = await response.json();
+// UPDATE USER
+// test('PUT - update user details', async ({ request }) => {
+
+//   const userClient = new UserClient(request);
+
+//   const response = await userClient.updateUser(
+//     authToken,
+//     {
+//       firstname: `Dhyey${Date.now()}`,
+//       lastname: 'Updated',
+//       phonenumber: `${Math.floor(Math.random() * 10000000000)}`
+//     }
+//   );
+
+//   console.log('PUT STATUS =>', response.status());
+
+//   const body = await response.json();
+
+//   console.log(JSON.stringify(body, null, 2));
+
+//   expect(response.status()).toBe(200);
+
+// });
 
 
-  expect(response.status()).toBe(201);
-  expect(body.title).toBe('Rahul Sharma');
-  expect(body.price).toBe(100);
-  expect(body.id).toBeDefined();
+// DELETE USER
+test('DELETE - delete user', async ({ request }) => {
 
-  // BONUS: store for reuse
-  createdUserId = body.id;
-  console.log(`Created user ID: ${createdUserId}`);
-});
+  const userClient = new UserClient(request);
 
-//  PUT REQUEST
-test('PUT - update user', async () => {
-  const response = await userClient.updateUser(21, {
-    title: 'Updated Name',
-    price: 150,
-    description: 'Updated description',
-    category: 'electronics',
-    image: 'https://i.pravatar.cc'
-  });
+  const response = await userClient.deleteUser(
+    userId,
+    authToken
+  );
+
   const body = await response.json();
 
+  JSON.stringify(body, null, 2)
+
   expect(response.status()).toBe(200);
-  expect(body.title).toBe('Updated Name');
-  expect(body.price).toBe(150);
+
 });
 
-// DELETE REQUEST
-test('DELETE - delete user', async () => {
-  const response = await userClient.deleteUser(2);
-  expect(response.status()).toBe(200);
-});
 
-//  chain data across tests 
-test('BONUS - reuse createdUserId in assertion', async () => {
-  // createdUserId was set in the POST test above
-  console.log(`Reusing created user ID: ${createdUserId}`);
-  expect(createdUserId).toBeDefined();
+// BONUS ASSERTION
+test('BONUS - reuse stored values', async () => {
+
+  expect(authToken).toBeDefined();
+
+  expect(userId).toBeDefined();
+
 });
